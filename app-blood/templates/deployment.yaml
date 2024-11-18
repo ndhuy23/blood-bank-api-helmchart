@@ -58,11 +58,6 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: spec.serviceAccountName
-            - name: SECRET_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: database-connection-secret
-                  key: ConnectionStrings__DefaultConnection
           livenessProbe:
             httpGet:
               path: /
@@ -73,6 +68,9 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          envFrom:
+            - secretRef:
+                name: database-connection-secret
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
